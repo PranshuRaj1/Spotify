@@ -32,6 +32,8 @@ songItems.forEach((element,i)=>{
     
     element.getElementsByTagName("Img")[0].src = songs[i].coverPath;
     element.getElementsByClassName("songName")[0].innerText = songs[i].songName;
+    element.getElementsByClassName("timestamp")[0].innerHTML = `<span class="duration">0:00</span><i id="${i}" class="far songItemPlay button fa-play-circle"></i>`;
+    
 
 
 })
@@ -138,13 +140,37 @@ Array.from(document.getElementsByClassName('songItemPlay')).forEach((element)=> 
         masterPlay.classList.remove('fa-play-circle');
         masterPlay.classList.add('fa-pause-circle');
         
+        audioElement.addEventListener('loadedmetadata', () => {
+            durationSpan.innerText = songs[songIndex].duration;
+            
+        })
+        
         }
         
     })
 })
 
 
+let startX = null;
 
+document.getElementById('bottom').addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+});
+
+document.getElementById('bottom').addEventListener('touchend', (e) => {
+    if (startX !== null) {
+        const endX = e.changedTouches[0].clientX;
+        const deltaX = endX - startX;
+
+        if (deltaX > 50) { 
+            playPreviousSong();
+        } else if (deltaX < -50) {
+            playNextSong();
+        }
+
+        startX = null;
+    }
+});
 
 
 document.getElementById('next').addEventListener('click',()=>{
